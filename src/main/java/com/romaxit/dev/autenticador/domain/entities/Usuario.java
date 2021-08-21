@@ -13,8 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "usuario2", uniqueConstraints = @UniqueConstraint(name = "usuario_uk", columnNames = "username"))
-public class UserEntity implements Serializable {
+@Table(name = "usuario", uniqueConstraints = @UniqueConstraint(name = "usuario_uk", columnNames = "username"))
+public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,11 +39,11 @@ public class UserEntity implements Serializable {
 
     /** The Intentos fallidos. */
     @Column(name = "INTENTOS_FALLIDOS")
-    private Long intentosFallidos;
+    private int intentosFallidos;
 
     /** The Intentos exitosos. */
     @Column(name = "INTENTOS_EXITOSOS")
-    private Long intentosExitosos;
+    private int intentosExitosos;
 
     @Column(unique = true)
     private String email;

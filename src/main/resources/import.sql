@@ -4,6 +4,12 @@ INSERT INTO usuario (id, activo, apellido, eliminado, email, estado, intentos_ex
 INSERT INTO usuario (id, activo, apellido, avatar, eliminado, email, estado, intentos_exitosos, intentos_fallidos, nombre, password, username) VALUES (6, true, 'Romero', 'av-5.png', null, 'isabellaromero@gmail.com', 1, 0, 0, 'Isabella', '$2a$10$EN0ruIGWuRrriERXhxSj6O24.7OccW3jj5j1Ap7wvg/RsP5/F8Czi', 'isabellaromero@gmail.com');
 INSERT INTO usuario (id, activo, apellido, avatar, eliminado, email, estado, intentos_exitosos, intentos_fallidos, nombre, password, username) VALUES (8, true, 'camacho', 'av-5.png', null, 'conycamacho@mail.co', 1, 0, 0, 'cony', '$2a$10$MjFn0nHetF2sHBFC3OASQOs/i5NGMBntaum7T0R3EldjdaMVO4fPm', 'conycamacho@mail.co');
 
+INSERT INTO usuario2 (id,nombre,apellido, email, username, password, estado, intentos_exitosos, intentos_fallidos, avatar) VALUES (1,'Nelson', 'Camacho', 'nc@mail.co', 'nc@mail.co',  '$2a$10$5VYzA1qYNJVV7UqB/vOGAOH8fPQeurb.B6or.6iTMLCEdMjRrRb/q',1,0,0,'av-1.png');
+INSERT INTO usuario2 (id,nombre,apellido, email, username, password, estado, intentos_exitosos, intentos_fallidos, avatar) VALUES (2,'carlos', 'romero', 'cr@mail.co', 'cr@mail.co',  '$2a$10$HEBKG0QeXV0u3ftVanWP0.SF/QUs4//C2FAYeAZL0SONM0UEMXw6q',1,0,0,'av-1.png');
+INSERT INTO usuario2 (id, activo, apellido, eliminado, email, estado, intentos_exitosos, intentos_fallidos, nombre, password, username, avatar) VALUES (4, true, 'admin', null, 'admin@mail.co', 1, 0, 0, 'admin', '2a$10$5.MZsMoipUMEfsI.mJaEBexCQBHv8kpwTJyTwuEPu2N9M5jsUh.Qi', 'admin@mail.co','av-1.png');
+INSERT INTO usuario2 (id, activo, apellido, avatar, eliminado, email, estado, intentos_exitosos, intentos_fallidos, nombre, password, username) VALUES (6, true, 'Romero', 'av-5.png', null, 'isabellaromero@gmail.com', 1, 0, 0, 'Isabella', '$2a$10$EN0ruIGWuRrriERXhxSj6O24.7OccW3jj5j1Ap7wvg/RsP5/F8Czi', 'isabellaromero@gmail.com');
+INSERT INTO usuario2 (id, activo, apellido, avatar, eliminado, email, estado, intentos_exitosos, intentos_fallidos, nombre, password, username) VALUES (8, true, 'camacho', 'av-5.png', null, 'conycamacho@mail.co', 1, 0, 0, 'cony', '$2a$10$MjFn0nHetF2sHBFC3OASQOs/i5NGMBntaum7T0R3EldjdaMVO4fPm', 'conycamacho@mail.co');
+
 insert into roles (id, nombre) values (1, 'ADMINISTRADOR');
 insert into roles (id, nombre) values (2, 'TUTOR');
 insert into roles (id, nombre) values (3, 'ESTUDIANTE');
@@ -20,6 +26,18 @@ insert into usuario_rol (usuario_id, role_id)  values (4,2);
 insert into usuario_rol (usuario_id, role_id)  values (4,3);
 INSERT INTO usuario_rol (usuario_id, role_id) VALUES (6, 3);
 INSERT INTO usuario_rol (usuario_id, role_id) VALUES (8, 3);
+
+insert into usuario2_rol (usuario_id, role_id)  values (1,1);
+insert into usuario2_rol (usuario_id, role_id)  values (1,2);
+insert into usuario2_rol (usuario_id, role_id)  values (1,3);
+insert into usuario2_rol (usuario_id, role_id)  values (2,1);
+insert into usuario2_rol (usuario_id, role_id)  values (2,2);
+insert into usuario2_rol (usuario_id, role_id)  values (2,3);
+insert into usuario2_rol (usuario_id, role_id)  values (4,1);
+insert into usuario2_rol (usuario_id, role_id)  values (4,2);
+insert into usuario2_rol (usuario_id, role_id)  values (4,3);
+INSERT INTO usuario2_rol (usuario_id, role_id) VALUES (6, 3);
+INSERT INTO usuario2_rol (usuario_id, role_id) VALUES (8, 3);
 
 INSERT INTO nivel (id, activo, dificultad, nombre, eliminado) VALUES (1, true, 1, 'INICIAL', to_date('09-09-1999','dd-mm-yyyy'));
 INSERT INTO nivel (id, activo, dificultad, nombre, eliminado) VALUES (2, true, 5, 'INTERMEDIO', to_date('09-09-1999','dd-mm-yyyy'));
@@ -134,7 +152,7 @@ INSERT INTO avance_pregunta (id, activo, eliminado, fecha_creacion, puntaje, res
 INSERT INTO avance_pregunta (id, activo, eliminado, fecha_creacion, puntaje, resultado, tipo_avance, usuario_estudiante_id, pregunta, respuesta_pregunta) VALUES (30, true, to_date('09-09-1999','dd-mm-yyyy'), to_timestamp('2020-11-04 22:42','yyyy-mm-dd HH24:MI') , 500, 1, 1, 6, 5, null);
 
 SELECT setval('usuario_id_seq', (SELECT MAX(id) FROM usuario)+1);
-SELECT setval('usuario2_seq', (SELECT MAX(id) FROM usuario2 )+1);
+SELECT setval('usuario2_id_seq', (SELECT MAX(id) FROM usuario2 )+1);
 SELECT setval('grupo_id_seq', (SELECT MAX(id) FROM grupo)+1);
 SELECT setval('datagenia_id_seq', (SELECT MAX(id) FROM datagenia)+1);
 SELECT setval('archivo_id_seq', (SELECT MAX(id) FROM archivo)+1);
