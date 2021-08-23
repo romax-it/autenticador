@@ -35,9 +35,10 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioService.create(usuario), HttpStatus.OK);
     }
 
-    @GetMapping("/findById")
-    public ResponseEntity<UsuarioDto> findOne(@RequestParam int id) throws ResourceNotFoundException {
-        return new ResponseEntity<>(usuarioService.findById(id), HttpStatus.OK);
+    @GetMapping("/findByToken")
+    public ResponseEntity<UsuarioDto> findByToken(@RequestHeader(name = "Authorization") String token) throws ResourceNotFoundException {
+        token = token.replaceAll("Bearer ","");
+        return new ResponseEntity<>(usuarioService.findByToken(token), HttpStatus.OK);
     }
 
     @PutMapping("/update")

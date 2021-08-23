@@ -39,7 +39,7 @@ public class UsuarioDetailService implements UserDetailsService {
         Usuario user = usuarioService.findEntityByUsername(username);
 
         if (user == null ) {
-            throw new ResourceNotFoundException("User Not Found with -> username or email : " + username);
+            throw new ResourceNotFoundException( String.format(" No fue posible consultar el Usuario: %s", username) );
         }
         List<GrantedAuthority> authorities = user.getRoles().stream().map(rol -> new SimpleGrantedAuthority(rol.getNombre())).collect(Collectors.toList());
 

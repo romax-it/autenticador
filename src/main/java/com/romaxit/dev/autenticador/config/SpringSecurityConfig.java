@@ -1,6 +1,7 @@
 package com.romaxit.dev.autenticador.config;
 
 
+import com.romaxit.dev.autenticador.core.ConstantesAutenticador;
 import com.romaxit.dev.autenticador.services.impl.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -85,24 +86,19 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        String rutasAdmitidas = ConstantesAutenticador.Seguridad.RUTAS_ADMITIDAS;
         http.cors().and()
                 .authorizeRequests()
-                .antMatchers("/", "/webjars/**").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/v1/archivo-api/getById/**").permitAll()
-                .antMatchers("/v1/usuario-api/create").permitAll()
+                .antMatchers(rutasAdmitidas).permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/v2/api-docs/**").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll()
-//                .antMatchers("/api/administracion/archivo/downloadReporte/**").permitAll()
-//                .antMatchers("/api/mejoramiento/mantenimiento/**/exportActaPDF").permitAll()
                 .antMatchers("/swagger**").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .csrf().disable().authorizeRequests()
-                //.antMatchers(HttpMethod.OPTIONS, "**").permitAll()
         ;
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

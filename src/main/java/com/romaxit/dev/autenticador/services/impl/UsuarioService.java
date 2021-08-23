@@ -1,5 +1,7 @@
 package com.romaxit.dev.autenticador.services.impl;
 
+import com.romaxit.dev.autenticador.config.JwtProvider;
+import com.romaxit.dev.autenticador.config.UsuarioDetailService;
 import com.romaxit.dev.autenticador.core.auxiliar.ResultSearchData;
 import com.romaxit.dev.autenticador.core.exceptions.ResourceNotFoundException;
 import com.romaxit.dev.autenticador.domain.dto.UsuarioDto;
@@ -42,7 +44,13 @@ public class UsuarioService extends BaseService<Usuario> implements IUsuarioServ
     private Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
     @Autowired
+    private UsuarioDetailService userDetailsService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtProvider tokenProvider;
 
     @Override
     public UsuarioDto getUserLogged() {
@@ -166,13 +174,14 @@ public class UsuarioService extends BaseService<Usuario> implements IUsuarioServ
     }
 
     public Iterable<UsuarioDto> findAll() {
-//        Iterable<Usuario> estudiantes = repository.findAll();
-//        List<UsuarioDto> estuddiantesDto = estudiantes.iterator().map(ent ->
-//                new UsuarioDto(ent.getUsername(), ent.getNombre(), ent.getApellido(), ent.getEmail(), ent.getAvatar(), ent.getRoles()))
-//                .collect(Collectors.toList());
-//        return  estuddiantesDto;
-//        return repository.findAll();
         return null;
+    }
+
+    @Override
+    public UsuarioDto findByToken(String token) throws ResourceNotFoundException {
+        String username = tokenProvider.getUserNameFromJwtToken(token);
+        UsuarioDto usuarioDto = this.findByUsername(username);
+        return  usuarioDto;
     }
 
     public UsuarioDto findById(int id) throws ResourceNotFoundException {
