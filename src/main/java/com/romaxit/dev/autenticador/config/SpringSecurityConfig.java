@@ -1,7 +1,6 @@
 package com.romaxit.dev.autenticador.config;
 
 
-import com.romaxit.dev.autenticador.core.ConstantesAutenticador;
 import com.romaxit.dev.autenticador.services.impl.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -50,7 +48,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
                 .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+                .passwordEncoder(bCryptPasswordEncoder());
     }
 
     /* (non-Javadoc)
@@ -62,22 +60,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-//    @Bean
-//    SecurityConfiguration security() {
-//        return new SecurityConfiguration(null, null, null, // realm Needed for authenticate button to work
-//                null, // appName Needed for authenticate button to work
-//                "BEARER ", // apiKeyValue
-//                ApiKeyVehicle.HEADER, "AUTHORIZATION_HEADER", // apiKeyName
-//                null);
-//    }
 
-    /**
-     * Password encoder.
-     *
-     * @return the password encoder
-     */
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -86,11 +71,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        String rutasAdmitidas = ConstantesAutenticador.Seguridad.RUTAS_ADMITIDAS;
         http.cors().and()
                 .authorizeRequests()
-                .antMatchers(rutasAdmitidas).permitAll()
+                //.antMatchers(rutasAdmitidas).permitAll()
+                .antMatchers("/api/auth/login").permitAll()
                 .antMatchers("/actuator/**").permitAll()
+                .antMatchers("/v1/usuario-api/create").permitAll()
                 .antMatchers("/v2/api-docs/**").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger**").permitAll()

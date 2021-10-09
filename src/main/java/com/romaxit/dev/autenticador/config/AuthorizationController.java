@@ -2,7 +2,6 @@ package com.romaxit.dev.autenticador.config;
 
 import com.romaxit.dev.autenticador.config.model.JwtResponse;
 import com.romaxit.dev.autenticador.config.model.Login;
-import com.romaxit.dev.autenticador.core.exceptions.ErrorPersistException;
 import com.romaxit.dev.autenticador.core.exceptions.ResourceNotFoundException;
 import com.romaxit.dev.autenticador.core.exceptions.UnauthorizedRequestException;
 import com.romaxit.dev.autenticador.domain.entities.Usuario;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -66,41 +66,42 @@ public class AuthorizationController {
         Authentication authentication = null;
         int contador = 0;
         if (loginRequest.getUsername() != null) {
-            Usuario user = usuarioService.findEntityByUsername(loginRequest.getUsername());
+            Usuario user = null;
+            try {
+                user = usuarioService.findEntityByUsername(loginRequest.getUsername());
+            } catch (Exception e) {
+                throw new UnauthorizedRequestException("Error al consultar información del usuario");
+            }
             if (user != null) {
+                if (user.getIntentosFallidos() > 3) {
+                    throw new UnauthorizedRequestException("Ha superado la cantidad de inténtos permitidos");
+                }
                 try {
-                    if (user.getEstado()== 1 || user.getEstado() == 0) {
-                        String clave = passwordEncoder.encode(loginRequest.getPassword());
-                        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                                loginRequest.getUsername(), loginRequest.getPassword()));
+                    String clave = passwordEncoder.encode(loginRequest.getPassword());
+                    authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(), loginRequest.getPassword()));
+                } catch (AuthenticationException e) {
+                    throw new UnauthorizedRequestException("Usuario o clave incorrectos. Si el problema persiste, favor intente restablecer contraseña");
+                }
 
-                        if (authentication.isAuthenticated()) {
-                            int exitososPrevios = user.getIntentosExitosos();
-                            contador = exitososPrevios + 1;
-                            user.setIntentosExitosos(contador);
-                        } else {
-                            int fallidosPrevios = user.getIntentosFallidos();
-                            contador = fallidosPrevios + 1;
-                            user.setIntentosFallidos(contador);
-                            throw new UnauthorizedRequestException("Usuario o clave incorrectos.");
-                        }
-                        usuarioService.updateEntity(user);
-                    } else {
-                        throw new UnauthorizedRequestException("El usuario no esta activo en el sistema.");
-                    }
-                }
-                // Si hubo un error, aumenta el numero de intentos fallidos.
-                catch (Exception e) {
-                    contador = user.getIntentosFallidos() + 1;
+                if (authentication.isAuthenticated()) {
+                    int exitososPrevios = user.getIntentosExitosos();
+                    contador = exitososPrevios + 1;
+                    user.setIntentosExitosos(contador);
+                    user.setIntentosFallidos(0);
+                } else {
+                    int fallidosPrevios = user.getIntentosFallidos();
+                    contador = fallidosPrevios + 1;
                     user.setIntentosFallidos(contador);
-                    try {
-                        usuarioService.updateEntity(user);
-                    } catch ( ResourceNotFoundException resourceNotFoundException) {
-                        throw new ErrorPersistException("Error actualizando datos fallidos de usuario");
-                    }
                 }
+                try {
+                    usuarioService.updateEntity(user);
+                } catch (ResourceNotFoundException e) {
+                    throw new UnauthorizedRequestException("El usuario no esta activo en el sistema.");
+                }
+
             } else {
-                throw new UnauthorizedRequestException("Usuario o clave incorrectos.");
+                throw new UnauthorizedRequestException("Usuario o clave incorrectos. Favor reviselos e inténtelo nuevamente");
             }
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
