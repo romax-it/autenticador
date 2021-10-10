@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class WebSecurityConfig.
  */
@@ -77,6 +77,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/login").permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/v1/usuario-api/create").permitAll()
+                .antMatchers("/v1/usuario-api/pruebacorreo").permitAll()
                 .antMatchers("/v2/api-docs/**").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger**").permitAll()

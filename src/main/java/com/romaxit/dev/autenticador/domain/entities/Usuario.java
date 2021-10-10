@@ -61,6 +61,9 @@ public class Usuario implements Serializable {
     @Column(name = "eliminado")
     public Date eliminado;
 
+    @Column(name = "codigoSegundoFactor", columnDefinition = "VARCHAR(6)  NULL")
+    private String codigoSegundoFactor;
+
     /**
      *
      */

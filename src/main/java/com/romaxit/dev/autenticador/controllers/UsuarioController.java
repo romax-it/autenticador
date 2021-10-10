@@ -3,9 +3,11 @@ package com.romaxit.dev.autenticador.controllers;
 import com.romaxit.dev.autenticador.core.auxiliar.ResultSearchData;
 import com.romaxit.dev.autenticador.core.exceptions.ResourceNotFoundException;
 import com.romaxit.dev.autenticador.core.exceptions.UnauthorizedRequestException;
+import com.romaxit.dev.autenticador.domain.dto.MailDto;
 import com.romaxit.dev.autenticador.domain.dto.RoleDto;
 import com.romaxit.dev.autenticador.domain.dto.UsuarioDto;
 import com.romaxit.dev.autenticador.services.IUsuarioService;
+import com.romaxit.dev.autenticador.services.impl.IEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,13 @@ public class UsuarioController {
 
     @Autowired
     private IUsuarioService<UsuarioDto> usuarioService;
+
+    private IEmailService emailService;
+
+    @Autowired
+    public UsuarioController(IEmailService emailService) {
+        this.emailService = emailService;
+    }
 
     @GetMapping(value = "/health")
     public ResponseEntity<String> health() {
@@ -81,5 +90,12 @@ public class UsuarioController {
         UsuarioDto usuarioLogueado = usuarioService.getUserLogged();
         List<String> roles =  usuarioLogueado.getRoles().stream().map(RoleDto::getNombre).collect(Collectors.toList());
         return  ResponseEntity.ok(roles);
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+    @GetMapping("/pruebacorreo")
+    public void pruebaCorreo(){
+        MailDto mailDto = new MailDto("soportecarlosromero@gmail.com","soportecarlosromero@gmail.com", "prueba", "mensaje de prueba");
+        emailService.sendMail(mailDto);
     }
 }
